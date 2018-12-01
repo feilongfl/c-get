@@ -6,6 +6,9 @@ import (
 	"os"
 )
 
+var _version_ = "v1.0.0"
+var _commit_ = "manual"
+
 func main() {
 	//log.SetFormatter(&log.JSONFormatter{})
 	//runtime.GOMAXPROCS(runtime.NumCPU())

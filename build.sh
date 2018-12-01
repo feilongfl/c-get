@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 echo build linux ...
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o c-get-linux .
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o c-get-linux -ldflags "-X main._version_='"`git describe --abbrev=0 --tags`"' -X main._commit_='"`git log --pretty=format:"%h" -1`"'" .
 echo build mac ...
-CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o c-get-mac .
+CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o c-get-mac -ldflags "-X main._version_='"`git describe --abbrev=0 --tags`"' -X main._commit_='"`git log --pretty=format:"%h" -1`"'" .
 echo build windows ...
-CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o c-get-win.exe .
+CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o c-get-win.exe -ldflags "-X main._version_='"`git describe --abbrev=0 --tags`"' -X main._commit_='"`git log --pretty=format:"%h" -1`"'" .

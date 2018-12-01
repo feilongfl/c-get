@@ -9,7 +9,10 @@ import (
 
 func cliRecv() {
 	app := cli.NewApp()
-	app.Version = "1.0.0"
+	app.Version = _version_
+	app.Author = "feilong"
+	app.Email = "feilongphone@gmail.com"
+	app.Description = _commit_
 
 	app.Commands = []cli.Command{
 		//{
