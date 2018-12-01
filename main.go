@@ -8,6 +8,7 @@ import (
 
 var _version_ = "v1.0.0"
 var _commit_ = "manual"
+var _unknowPic_ = "http://xxx.pic"
 
 func initParse() {
 	parseList = append(parseList, parse_s{
@@ -34,6 +35,20 @@ func initParse() {
 		getComicChapter:    getComicChapterDmzj,
 		getChapterImageReq: getChapterImageReqDefault,
 		getChapterImage:    getChapterImageDmzj,
+		getImage:           getImageDefault,
+	})
+
+	id += 1
+	parseList = append(parseList, parse_s{
+		name:               "扑飞漫画",
+		id:                 id,
+		regex:              []string{"www.pufei.net"},
+		getComicInfoReq:    getComicInfoReqDefault,
+		getComicInfo:       getComicInfoPufei,
+		getComicChapterReq: getComicInfoReqDefault,
+		getComicChapter:    getComicChapterPufei,
+		getChapterImageReq: getChapterImageReqDefault,
+		getChapterImage:    getChapterImagePufei,
 		getImage:           getImageDefault,
 	})
 

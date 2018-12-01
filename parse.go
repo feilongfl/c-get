@@ -73,7 +73,7 @@ func getImageDefault(imageUrl string, referer string, path string) (err error) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		// path/to/whatever does not exist
 		var _httpReq = defaultHttpReq
-		_httpReq.url = "https://images.dmzj.com/" + imageUrl
+		_httpReq.url = imageUrl
 		_httpReq.referer = referer
 		err = fileGet(_httpReq, path)
 		if err != nil {

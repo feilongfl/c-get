@@ -76,6 +76,7 @@ func infoComic(url string) (err error) {
 	c := make(chan picChan_s)
 	bar := pb.StartNew(len(comic.comicChapter))
 	for index, chapter := range comic.comicChapter {
+		//index, chapter := 0, comic.comicChapter[0]
 		go func(chapter comicChapter_s, index int) {
 			//chapter := comic.comicChapter[index]
 			log.WithFields(log.Fields{
@@ -140,6 +141,9 @@ func infoComic(url string) (err error) {
 	}
 	bar = pb.StartNew(len(imageDownloadList))
 	download := func(image imageDownload_s) {
+		log.WithFields(log.Fields{
+			"image": image,
+		}).Info("start:")
 		err := parse.getImage(image.imageUrl, image.chapterUrl, image.savepath)
 		if err == nil {
 			image.success = true
@@ -163,6 +167,7 @@ func infoComic(url string) (err error) {
 				log.WithFields(log.Fields{
 					"image": done,
 				}).Error("failed:")
+				bar.Increment()
 			}
 		} else {
 			bar.Increment()

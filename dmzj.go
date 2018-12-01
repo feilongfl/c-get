@@ -13,7 +13,7 @@ func getComicInfoDmzj(doc *goquery.Document) (comicInfo comicInfo_s, err error) 
 	dinfo := doc.Find("div.wrap_intro_l")
 	comicInfo = comicInfo_s{
 		title:    dinfo.Find("div.comic_deCon > h1").Text(),
-		coverUrl: dinfo.Find("div.comic_i_img > a > img").AttrOr("src", "http://xxx.pic"),
+		coverUrl: dinfo.Find("div.comic_i_img > a > img").AttrOr("src", _unknowPic_),
 	}
 	dinfo.Find("ul.comic_deCon_liO > li").Each(func(i int, selection *goquery.Selection) {
 		data := selection.Text()
@@ -78,5 +78,8 @@ func getChapterImageDmzj(doc *goquery.Document) (imageUrl []string, err error) {
 	var f map[string]interface{}
 	err = json.Unmarshal([]byte(picJson), &f)
 	imageUrl = strings.Split(f["page_url"].(string), "\r\n")
+	for index, url := range imageUrl {
+		imageUrl[index] = "https://images.dmzj.com/" + url
+	}
 	return imageUrl, nil
 }
