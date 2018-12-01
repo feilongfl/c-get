@@ -23,36 +23,6 @@ type parse_s struct {
 
 var parseList = make([]parse_s, 0)
 
-func initParse() {
-	parseList = append(parseList, parse_s{
-		name:               "demo",
-		id:                 -1,
-		regex:              []string{"www.example.com"},
-		getComicInfoReq:    getComicInfoReqDefault,
-		getComicInfo:       getComicInfoDefault,
-		getComicChapterReq: getComicInfoReqDefault,
-		getComicChapter:    getComicChapterDefault,
-		getChapterImageReq: getChapterImageReqDefault,
-		getChapterImage:    getChapterImageDefault,
-		getImage:           getImageDefault,
-	})
-
-	id := 0
-	parseList = append(parseList, parse_s{
-		name:               "动漫之家",
-		id:                 id,
-		regex:              []string{"www.dmzj.com"},
-		getComicInfoReq:    getComicInfoReqDefault,
-		getComicInfo:       getComicInfoDmzj,
-		getComicChapterReq: getComicInfoReqDefault,
-		getComicChapter:    getComicChapterDmzj,
-		getChapterImageReq: getChapterImageReqDefault,
-		getChapterImage:    getChapterImageDmzj,
-		getImage:           getImageDefault,
-	})
-
-}
-
 func newParseFromUrl(url string) (p *parse_s, err error) {
 	for _, p := range parseList {
 		for _, r := range p.regex {
