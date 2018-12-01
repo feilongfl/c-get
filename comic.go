@@ -50,7 +50,7 @@ func infoComic(url string) (err error) {
 	if err != nil {
 		return err
 	}
-	fmt.Print(doc)
+	//fmt.Print(doc)
 	comic.comicInfo, err = parse.getComicInfo(doc)
 	if comic.comicInfo.comicChapterUrl != "" {
 		doc, err = parse.getComicInfoReq(comic.comicInfoUrl)
@@ -60,6 +60,9 @@ func infoComic(url string) (err error) {
 	} else {
 		comic.comicInfo.comicChapterUrl = comic.comicInfoUrl
 	}
+	log.WithFields(log.Fields{
+		"title": comic.comicInfo.title,
+	}).Warning("comic get")
 	comic.comicChapter, err = parse.getComicChapter(doc)
 	if err != nil {
 		return err
