@@ -32,7 +32,7 @@ deploy:
     - "c-get-win.exe"
   skip_cleanup: true
   on:
-    repo: feilongfl/Cimoc
+    repo: feilongfl/c-get
     branch:
       - master
     tags: true
