@@ -34,7 +34,7 @@ func httpGet(httpReq httpReqStruct) ([]byte, error) {
 
 	req, err := http.NewRequest(httpReq.method, httpReq.url, httpReq.body)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 		return nil, err
 	}
 
@@ -45,14 +45,14 @@ func httpGet(httpReq httpReqStruct) ([]byte, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 		return nil, err
 	}
 
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 		return nil, err
 	}
 
@@ -69,7 +69,7 @@ func htmlGet(httpReq httpReqStruct) (*goquery.Document, error) {
 
 	req, err := http.NewRequest(httpReq.method, httpReq.url, httpReq.body)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 		return nil, err
 	}
 
@@ -80,7 +80,7 @@ func htmlGet(httpReq httpReqStruct) (*goquery.Document, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -100,7 +100,7 @@ func fileGet(httpReq httpReqStruct, storagePath string) error {
 
 	req, err := http.NewRequest(httpReq.method, httpReq.url, httpReq.body)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 		return err
 	}
 
@@ -111,18 +111,22 @@ func fileGet(httpReq httpReqStruct, storagePath string) error {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 		return err
 	}
 	defer resp.Body.Close()
 
 	f, err := os.Create(storagePath)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error(err)
 		return err
 	}
 	defer f.Close()
-	io.Copy(f, resp.Body)
+	_, err = io.Copy(f, resp.Body)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
 
 	return nil
 }

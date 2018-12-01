@@ -59,7 +59,7 @@ func getComicChapterDmzj(doc *goquery.Document) (comicChapter []comicChapter_s, 
 		"comicChapter":        comicChapter,
 	}).Debug("info-comic")
 
-	return comicChapter, errors.New("nil func")
+	return comicChapter, nil
 }
 
 func getChapterImageDmzj(doc *goquery.Document) (imageUrl []string, err error) {

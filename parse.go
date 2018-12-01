@@ -86,26 +86,30 @@ func getChapterImageReqDefault(url string, referer string) (*goquery.Document, e
 
 //解析信息页
 func getComicInfoDefault(doc *goquery.Document) (comicInfo comicInfo_s, err error) {
-	return comicInfo, errors.New("nil func")
+	return comicInfo, errors.New("nil getComicInfoDefault func")
 }
 
 //解析章节列表
 func getComicChapterDefault(doc *goquery.Document) (comicChapter []comicChapter_s, err error) {
-	return comicChapter, errors.New("nil func")
+	return comicChapter, errors.New("nil getComicChapterDefault func")
 }
 
 //解析图片列表
 func getChapterImageDefault(doc *goquery.Document) (imageUrl []string, err error) {
-	return imageUrl, errors.New("nil func")
+	return imageUrl, errors.New("nil getChapterImageDefault func")
 }
 
 func getImageDefault(imageUrl string, referer string, path string) (err error) {
-	if _, err := os.Stat("/path/to/whatever"); os.IsNotExist(err) {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
 		// path/to/whatever does not exist
 		var _httpReq = defaultHttpReq
 		_httpReq.url = "https://images.dmzj.com/" + imageUrl
 		_httpReq.referer = referer
-		return fileGet(_httpReq, path)
+		err = fileGet(_httpReq, path)
+		if err != nil {
+			os.Remove(path)
+		}
+		return err
 	} else {
 		return nil
 	}

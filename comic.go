@@ -47,14 +47,23 @@ func infoComic(url string) (err error) {
 
 	var comic = comic_s{comicInfoUrl: url}
 	doc, err := parse.getComicInfoReq(comic.comicInfoUrl)
+	if err != nil {
+		return err
+	}
 	fmt.Print(doc)
 	comic.comicInfo, err = parse.getComicInfo(doc)
 	if comic.comicInfo.comicChapterUrl != "" {
 		doc, err = parse.getComicInfoReq(comic.comicInfoUrl)
+		if err != nil {
+			return err
+		}
 	} else {
 		comic.comicInfo.comicChapterUrl = comic.comicInfoUrl
 	}
 	comic.comicChapter, err = parse.getComicChapter(doc)
+	if err != nil {
+		return err
+	}
 
 	//get all images url
 	type picChan_s struct {
@@ -72,6 +81,7 @@ func infoComic(url string) (err error) {
 			}).Info("downloading")
 
 			doc, err = parse.getChapterImageReq(chapter.url, comic.comicInfo.comicChapterUrl)
+			// todo: fix here
 			pics, err := parse.getChapterImage(doc)
 			if err != nil {
 				log.WithFields(log.Fields{
@@ -110,7 +120,7 @@ func infoComic(url string) (err error) {
 	imageDownloadList := make([]imageDownload_s, 0)
 	imageid := 0
 	for chapterindex, chapter := range comic.comicChapter {
-		os.Mkdir(fmt.Sprintf("./data/%v", chapter.name), os.ModePerm)
+		os.MkdirAll(fmt.Sprintf("./data/%v/%v", comic.comicInfo.title, chapter.name), os.ModePerm)
 		for imageindex, image := range chapter.picsUrl {
 			imageDownloadList = append(imageDownloadList, imageDownload_s{
 				imageid,
@@ -118,7 +128,7 @@ func infoComic(url string) (err error) {
 				chapter.name,
 				chapter.url,
 				image,
-				fmt.Sprintf("./data/%v/%v.jpg", chapter.name, imageindex),
+				fmt.Sprintf("./data/%v/%v/%v.jpg", comic.comicInfo.title, chapter.name, imageindex),
 				false,
 				0,
 			})
@@ -142,11 +152,18 @@ func infoComic(url string) (err error) {
 		if done.success != true {
 			done.retry += 1
 			if done.retry < 5 {
+				log.WithFields(log.Fields{
+					"image": done,
+				}).Warning("retry:")
 				go download(done)
+			} else {
+				log.WithFields(log.Fields{
+					"image": done,
+				}).Error("failed:")
 			}
 		} else {
 			bar.Increment()
-			if bar.Current() == int64(len(comic.comicChapter)) {
+			if bar.Current() == int64(len(imageDownloadList)) {
 				break
 			}
 		}
