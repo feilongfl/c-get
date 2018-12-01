@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/PuerkitoBio/goquery"
 	log "github.com/sirupsen/logrus"
+	"os"
 	"regexp"
 )
 
@@ -99,8 +100,13 @@ func getChapterImageDefault(doc *goquery.Document) (imageUrl []string, err error
 }
 
 func getImageDefault(imageUrl string, referer string, path string) (err error) {
-	var _httpReq = defaultHttpReq
-	_httpReq.url = "https://images.dmzj.com/" + imageUrl
-	_httpReq.referer = referer
-	return fileGet(_httpReq, path)
+	if _, err := os.Stat("/path/to/whatever"); os.IsNotExist(err) {
+		// path/to/whatever does not exist
+		var _httpReq = defaultHttpReq
+		_httpReq.url = "https://images.dmzj.com/" + imageUrl
+		_httpReq.referer = referer
+		return fileGet(_httpReq, path)
+	} else {
+		return nil
+	}
 }
