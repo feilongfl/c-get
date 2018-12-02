@@ -1,6 +1,7 @@
 data
 c-get
-c-get-linux
+c-get-linux-arm
+c-get-linux-amd64
 c-get-mac
 c-get-win.exe
 .idea
