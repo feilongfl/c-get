@@ -27,7 +27,8 @@ deploy:
   provider: releases
   api_key: ${githubtoken}
   file:
-    - "c-get-linux"
+    - "c-get-linux-amd64"
+    - "c-get-linux-arm"
     - "c-get-mac"
     - "c-get-win.exe"
   skip_cleanup: true
