@@ -123,6 +123,7 @@ func infoComic(url string) (err error) {
 	//threadWork := make(chan int)
 
 	const threadMax = 10
+	const sleepTime = 1
 
 	imageDownloadList := make([]imageDownload_s, 0)
 	imageid := 0
@@ -155,6 +156,8 @@ func infoComic(url string) (err error) {
 		runtime.Gosched()
 	}
 	downloadDone := func(done imageDownload_s) {
+		//time.Sleep(sleepTime * time.Second)
+
 		if done.success != true {
 			done.retry += 1
 			if done.retry < 5 {
@@ -177,24 +180,19 @@ func infoComic(url string) (err error) {
 	}
 
 	works := 0
-	index := 0
 	//for _, image := range imageDownloadList {
 	for {
-		if (works < threadMax && index < len(imageDownloadList)) {
+		if (works < threadMax && bar.Current() < int64(len(imageDownloadList))) {
 			works++
-			index++
-			image := imageDownloadList[index]
+			image := imageDownloadList[bar.Current()]
 			go download(image)
 		} else {
 			done := <-imageDown_c
-			downloadDone(done)
 			works--
-		}
-		//if (index == len(imageDownloadList) && works == 0) {
-		//	break
-		//}
-		if bar.Current() == int64(len(imageDownloadList)) {
-			break
+			downloadDone(done)
+			if bar.Current() == int64(len(imageDownloadList)) {
+				break
+			}
 		}
 	}
 	//for {
