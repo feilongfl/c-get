@@ -52,6 +52,19 @@ func initParse() {
 		getImage:           getImageDefault,
 	})
 
+	id += 1
+	parseList = append(parseList, parse_s{
+		name:               "t腾讯漫画",
+		id:                 id,
+		regex:              []string{"ac.qq.com"},
+		getComicInfoReq:    getComicInfoReqDefault,
+		getComicInfo:       getComicInfoTencent,
+		getComicChapterReq: getComicInfoReqDefault,
+		getComicChapter:    getComicChapterPufei,
+		getChapterImageReq: getChapterImageReqDefault,
+		getChapterImage:    getChapterImagePufei,
+		getImage:           getImageDefault,
+	})
 }
 
 func main() {
