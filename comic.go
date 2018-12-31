@@ -6,6 +6,7 @@ import (
 	"gopkg.in/cheggaaa/pb.v2"
 	"os"
 	"runtime"
+	"time"
 )
 
 type comicInfo_s struct {
@@ -17,6 +18,7 @@ type comicInfo_s struct {
 	tag             []string
 	coverUrl        string
 	comicChapterUrl string
+	info            string
 }
 
 type comicChapter_s struct {
@@ -123,7 +125,7 @@ func infoComic(url string) (err error) {
 	//threadWork := make(chan int)
 
 	const threadMax = 10
-	const sleepTime = 1
+	const sleepTime = 300
 
 	imageDownloadList := make([]imageDownload_s, 0)
 	imageid := 0
@@ -156,7 +158,7 @@ func infoComic(url string) (err error) {
 		runtime.Gosched()
 	}
 	downloadDone := func(done imageDownload_s) {
-		//time.Sleep(sleepTime * time.Second)
+		time.Sleep(sleepTime * time.Microsecond)
 
 		if done.success != true {
 			done.retry += 1
@@ -182,7 +184,7 @@ func infoComic(url string) (err error) {
 	works := 0
 	//for _, image := range imageDownloadList {
 	for {
-		if (works < threadMax && bar.Current() < int64(len(imageDownloadList))) {
+		if works < threadMax && bar.Current() < int64(len(imageDownloadList)) {
 			works++
 			image := imageDownloadList[bar.Current()]
 			go download(image)

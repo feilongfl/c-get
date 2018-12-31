@@ -65,14 +65,28 @@ func initParse() {
 		getChapterImage:    getChapterImagePufei,
 		getImage:           getImageDefault,
 	})
+
+	id += 1
+	parseList = append(parseList, parse_s{
+		name:               "动漫之家v2",
+		id:                 id,
+		regex:              []string{"manhua.dmzj.com"},
+		getComicInfoReq:    getComicInfoReqDefault,
+		getComicInfo:       getComicInfoDmzjV2,
+		getComicChapterReq: getComicInfoReqDefault,
+		getComicChapter:    getComicChapterDmzjV2,
+		getChapterImageReq: getChapterImageReqDefault,
+		getChapterImage:    getChapterImageDmzjV2,
+		getImage:           getImageDefault,
+	})
 }
 
 func main() {
 	//log.SetFormatter(&log.JSONFormatter{})
 	//runtime.GOMAXPROCS(runtime.NumCPU())
 	log.SetOutput(os.Stdout)
-	log.SetLevel(log.WarnLevel)
-	//log.SetLevel(log.InfoLevel)
+	//log.SetLevel(log.WarnLevel)
+	log.SetLevel(log.InfoLevel)
 	//log.SetLevel(log.DebugLevel)
 	initParse()
 	cliRecv()

@@ -46,12 +46,20 @@ func getComicChapterPufei(doc *goquery.Document) (comicChapter []comicChapter_s,
 	//docS := doc.Find("div.plistBox > div.plist > ul > li").First()
 	doc.Find("div.plistBox > div.plist > ul > li").Each(func(i int, selection *goquery.Selection) {
 		adoc := selection.Find("a")
+
 		var c = comicChapter_s{
-			name:  ConvertToString(adoc.AttrOr("title", ""), "gbk", "utf-8"),
-			url:   "http://www.pufei.net" + adoc.AttrOr("href", ""),
+			name: ConvertToString(adoc.AttrOr("title", ""), "gbk", "utf-8"),
+
 			group: 0,
 		}
-		if c.url != "" {
+
+		adochref := adoc.AttrOr("href", "")
+		if adochref != "" {
+			if strings.Index(adochref, "https://") == -1 {
+				c.url = "http://www.pufei.net" + adochref
+			} else {
+				c.url = adochref
+			}
 			comicChapter = append(comicChapter, c)
 		}
 	})
@@ -68,7 +76,7 @@ func getChapterImagePufei(doc *goquery.Document) (imageUrl []string, err error) 
 	re := regexp.MustCompile(`packed="(.*?)"`)
 	picJsons := re.FindStringSubmatch(doc.Text())
 	if len(picJsons) != 2 {
-		return imageUrl, errors.New("regex not match!")
+		return imageUrl, errors.New("regex not match")
 	}
 	decoded, err := base64.StdEncoding.DecodeString(picJsons[1])
 	if err != nil {
