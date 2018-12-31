@@ -37,8 +37,8 @@ type comic_s struct {
 
 const sthreadMax = 2
 const ssleepTime = 500
-const threadMax = 5
-const sleepTime = 200
+const threadMax = 2
+const sleepTime = 1000
 
 func infoComic(url string) (err error) {
 	parse, err := newParseFromUrl(url)

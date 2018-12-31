@@ -68,7 +68,9 @@ func KanmanhuaDecode(input string) (result string, err error) {
 }
 
 func getChapterImageKanmanhua(doc *goquery.Document) (imageUrl []string, err error) {
-
+	if doc == nil {
+		return nil, errors.New("doc is nil")
+	}
 	re := regexp.MustCompile(`window.*\)`)
 	picJs := re.FindString(doc.Text())
 	if picJs == "" {

@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
+	"net/url"
 	"os"
 
 	"net/http"
@@ -26,12 +27,43 @@ var defaultHttpReq = httpReqStruct{
 	referer:   "",
 }
 
+func ProxyAwareHttpClient() *http.Client {
+	httpTransport := &http.Transport{}
+	proxyServer, isSet := os.LookupEnv("HTTP_PROXY")
+	if isSet {
+		proxyUrl, err := url.Parse(proxyServer)
+		if err != nil {
+			log.WithFields(
+				log.Fields{"proxyUrl": proxyUrl},
+			).Warning("proxy is invalid")
+		} else {
+			switch proxyUrl.Scheme {
+			case "http":
+				httpTransport.Proxy = http.ProxyURL(proxyUrl)
+				log.WithFields(
+					log.Fields{"proxyUrl": proxyUrl},
+				).Info(proxyUrl.Scheme + " proxy is set")
+			default:
+				log.WithFields(
+					log.Fields{"proxyUrl": proxyUrl},
+				).Warning(proxyUrl.Scheme + " proxy not support")
+				break
+			}
+		}
+	} else {
+		log.Info("no proxy")
+	}
+
+	httpClient := &http.Client{Transport: httpTransport}
+	return httpClient
+}
+
 func httpGet(httpReq httpReqStruct) ([]byte, error) {
 	log.WithFields(log.Fields{
 		"req": httpReq,
 	}).Debug("httpGet")
 
-	client := &http.Client{}
+	client := ProxyAwareHttpClient()
 
 	req, err := http.NewRequest(httpReq.method, httpReq.url, httpReq.body)
 	if err != nil {
@@ -66,7 +98,7 @@ func htmlGet(httpReq httpReqStruct) (*goquery.Document, error) {
 		"req": httpReq,
 	}).Debug("httpGet")
 
-	client := &http.Client{}
+	client := ProxyAwareHttpClient()
 
 	req, err := http.NewRequest(httpReq.method, httpReq.url, httpReq.body)
 	if err != nil {
@@ -99,7 +131,7 @@ func fileGet(httpReq httpReqStruct, storagePath string) error {
 		"req": httpReq,
 	}).Debug("fileGet")
 
-	client := &http.Client{}
+	client := ProxyAwareHttpClient()
 
 	req, err := http.NewRequest(httpReq.method, httpReq.url, httpReq.body)
 	if err != nil {
