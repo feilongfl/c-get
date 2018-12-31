@@ -74,7 +74,9 @@ func htmlGet(httpReq httpReqStruct) (*goquery.Document, error) {
 		return nil, err
 	}
 
-	req.Header.Set("User-Agent", httpReq.userAgent)
+	if httpReq.userAgent != "" {
+		req.Header.Set("User-Agent", httpReq.userAgent)
+	}
 	if httpReq.referer != "" {
 		req.Header.Set("Referer", httpReq.referer)
 	}

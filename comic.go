@@ -35,6 +35,11 @@ type comic_s struct {
 	parse        parse_s
 }
 
+const sthreadMax = 2
+const ssleepTime = 500
+const threadMax = 5
+const sleepTime = 200
+
 func infoComic(url string) (err error) {
 	parse, err := newParseFromUrl(url)
 	if err != nil {
@@ -69,7 +74,7 @@ func infoComic(url string) (err error) {
 	if err != nil {
 		return err
 	}
-
+	/////////////////////////////////////////
 	//get all images url
 	type picChan_s struct {
 		index int
@@ -77,39 +82,56 @@ func infoComic(url string) (err error) {
 	}
 	c := make(chan picChan_s)
 	bar := pb.StartNew(len(comic.comicChapter))
-	for index, chapter := range comic.comicChapter {
-		//index, chapter := 0, comic.comicChapter[0]
-		go func(chapter comicChapter_s, index int) {
-			//chapter := comic.comicChapter[index]
-			log.WithFields(log.Fields{
-				"index":   index,
-				"chapter": chapter.name,
-			}).Info("downloading")
+	sworker := 0
+	sindex := 0
 
-			doc, err = parse.getChapterImageReq(chapter.url, comic.comicInfo.comicChapterUrl)
-			// todo: fix here
-			pics, err := parse.getChapterImage(doc)
-			if err != nil {
-				log.WithFields(log.Fields{
-					"index":       index,
-					"chapter":     chapter.name,
-					"chapter url": chapter.url,
-				}).Warning(err)
-			}
-			c <- picChan_s{index, pics}
-			runtime.Gosched()
-		}(chapter, index)
-	}
 	for {
-		done := <-c
-		comic.comicChapter[done.index].picsUrl = done.pics
-		bar.Increment()
-		if bar.Current() == int64(len(comic.comicChapter)) {
-			break
+		if sworker < sthreadMax && sindex < len(comic.comicChapter) {
+			time.Sleep(ssleepTime * time.Microsecond)
+			sworker++
+			chapter := comic.comicChapter[sindex]
+			go func(chapter comicChapter_s, index int) {
+				//chapter := comic.comicChapter[index]
+				log.WithFields(log.Fields{
+					"index":   index,
+					"chapter": chapter.name,
+				}).Info("downloading")
+
+				doc, err = parse.getChapterImageReq(chapter.url, comic.comicInfo.comicChapterUrl)
+				// todo: fix here
+				pics, err := parse.getChapterImage(doc)
+				if err != nil {
+					log.WithFields(log.Fields{
+						"index":       index,
+						"chapter":     chapter.name,
+						"chapter url": chapter.url,
+					}).Warning(err)
+				}
+				c <- picChan_s{index, pics}
+
+				sindex++
+				runtime.Gosched()
+			}(chapter, sindex)
+		} else {
+			done := <-c
+			comic.comicChapter[done.index].picsUrl = done.pics
+			log.WithFields(log.Fields{
+				"done": done,
+			}).Info("done")
+			bar.Increment()
+			sworker--
+			if bar.Current() == int64(len(comic.comicChapter)) {
+				break
+			}
 		}
 	}
 	bar.Finish()
 
+	log.WithFields(log.Fields{
+		"comic.comicChapter": comic.comicChapter,
+	}).Debug("done all")
+
+	/////////////////////////////////////////
 	//get all images
 	type imageDownload_s struct {
 		index       int
@@ -123,9 +145,6 @@ func infoComic(url string) (err error) {
 	}
 	imageDown_c := make(chan imageDownload_s)
 	//threadWork := make(chan int)
-
-	const threadMax = 10
-	const sleepTime = 300
 
 	imageDownloadList := make([]imageDownload_s, 0)
 	imageid := 0
@@ -145,6 +164,10 @@ func infoComic(url string) (err error) {
 			imageid += 1
 		}
 	}
+	log.WithFields(log.Fields{
+		"imageDownloadList": imageDownloadList,
+	}).Debug("image all")
+
 	bar = pb.StartNew(len(imageDownloadList))
 	download := func(image imageDownload_s) {
 		log.WithFields(log.Fields{
