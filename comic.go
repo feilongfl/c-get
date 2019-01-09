@@ -139,21 +139,19 @@ func getImageUrlList(p *parse_s, comic *comic_s) (err error) {
 
 /////////////////////////////////////////
 //get all images
-func downloadImages(p *parse_s, comic *comic_s) (err error) {
-	type imageDownload_s struct {
-		index       int
-		chapterId   int
-		chapterName string
-		chapterUrl  string
-		imageUrl    string
-		savepath    string
-		success     bool
-		retry       int
-	}
-	imageDown_c := make(chan imageDownload_s)
-	//threadWork := make(chan int)
+type imageDownload_s struct {
+	index       int
+	chapterId   int
+	chapterName string
+	chapterUrl  string
+	imageUrl    string
+	savepath    string
+	success     bool
+	retry       int
+}
 
-	imageDownloadList := make([]imageDownload_s, 0)
+func genDownloadImageList(comic *comic_s) (imageDownloadList []imageDownload_s, err error) {
+	imageDownloadList = make([]imageDownload_s, 0)
 	imageid := 0
 	for chapterindex, chapter := range comic.comicChapter {
 		os.MkdirAll(fmt.Sprintf("./data/%v/%v", comic.comicInfo.title, chapter.name), os.ModePerm)
@@ -174,8 +172,13 @@ func downloadImages(p *parse_s, comic *comic_s) (err error) {
 	log.WithFields(log.Fields{
 		"imageDownloadList": imageDownloadList,
 	}).Debug("image all")
+	return imageDownloadList, err
+}
 
+func downloadImageFromList(p *parse_s, imageDownloadList []imageDownload_s) (err error) {
+	imageDown_c := make(chan imageDownload_s)
 	bar := pb.StartNew(len(imageDownloadList))
+
 	download := func(image imageDownload_s) {
 		log.WithFields(log.Fields{
 			"image": image,
@@ -205,14 +208,10 @@ func downloadImages(p *parse_s, comic *comic_s) (err error) {
 			}
 		} else {
 			bar.Increment()
-			//if bar.Current() == int64(len(imageDownloadList)) {
-			//	break
-			//}
 		}
 	}
 
 	works := 0
-	//for _, image := range imageDownloadList {
 	for {
 		if works < threadMax && bar.Current() < int64(len(imageDownloadList)) {
 			works++
@@ -227,13 +226,13 @@ func downloadImages(p *parse_s, comic *comic_s) (err error) {
 			}
 		}
 	}
-	//for {
-	//	done := <-imageDown_c
-	//	downloadDone(done)
-	//}
 	bar.Finish()
+}
 
-	return err
+func downloadImages(p *parse_s, comic *comic_s) (err error) {
+	imageDownloadList, _ := genDownloadImageList(comic)
+
+	return downloadImageFromList(p, imageDownloadList)
 }
 
 func infoComic(url string) (err error) {
