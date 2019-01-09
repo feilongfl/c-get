@@ -9,21 +9,14 @@ import (
 	"os"
 )
 
-func initParse() {
-	parseArray := []source.Parse_s{
-		// add parse here
-		source.ParseDemo,
-		source.ParseDMZJ,
-		source.ParsePUFEI,
-		source.ParseTENCENT,
-		source.ParseDMZJV2,
-		source.ParseKANMANHUA,
-	}
-
-	for i, p := range parseArray {
-		p.Id = i
-		source.ParseList = append(source.ParseList, p)
-	}
+var parseArray = []source.Parse_s{
+	// add parse here
+	source.ParseDemo,
+	source.ParseDMZJ,
+	source.ParsePUFEI,
+	source.ParseTENCENT,
+	source.ParseDMZJV2,
+	source.ParseKANMANHUA,
 }
 
 func main() {
@@ -33,6 +26,6 @@ func main() {
 	log.SetLevel(log.WarnLevel)
 	//log.SetLevel(log.InfoLevel)
 	//log.SetLevel(log.DebugLevel)
-	initParse()
+	source.InitParse(parseArray)
 	command.CliRecv()
 }

@@ -42,6 +42,17 @@ type comic_s struct {
 	parse        Parse_s
 }
 
+type imageDownload_s struct {
+	index       int
+	chapterId   int
+	chapterName string
+	chapterUrl  string
+	imageUrl    string
+	savepath    string
+	success     bool
+	retry       int
+}
+
 func parseGet(url string) (p *Parse_s, err error) {
 	parse, err := newParseFromUrl(url)
 	if err != nil {
@@ -141,17 +152,6 @@ func getImageUrlList(p *Parse_s, comic *comic_s) (err error) {
 
 /////////////////////////////////////////
 //get all images
-type imageDownload_s struct {
-	index       int
-	chapterId   int
-	chapterName string
-	chapterUrl  string
-	imageUrl    string
-	savepath    string
-	success     bool
-	retry       int
-}
-
 func genDownloadImageList(comic *comic_s) (imageDownloadList []imageDownload_s, err error) {
 	imageDownloadList = make([]imageDownload_s, 0)
 	imageid := 0

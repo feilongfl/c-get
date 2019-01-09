@@ -3,6 +3,7 @@ package source
 import (
 	"errors"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/feilongfl/c-get/source"
 	log "github.com/sirupsen/logrus"
 	"regexp"
 )
@@ -35,4 +36,11 @@ func newParseFromUrl(url string) (p *Parse_s, err error) {
 		}
 	}
 	return nil, errors.New("no parse match")
+}
+
+func InitParse(parseArray []Parse_s) {
+	for i, p := range parseArray {
+		p.Id = i
+		source.ParseList = append(source.ParseList, p)
+	}
 }
