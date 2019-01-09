@@ -227,6 +227,8 @@ func downloadImageFromList(p *parse_s, imageDownloadList []imageDownload_s) (err
 		}
 	}
 	bar.Finish()
+
+	return err
 }
 
 func downloadImages(p *parse_s, comic *comic_s) (err error) {

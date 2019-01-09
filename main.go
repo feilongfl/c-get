@@ -1,6 +1,7 @@
 package main
 
 import (
+	"c-get/feilong"
 	//"log"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -41,6 +42,7 @@ func initParse() {
 }
 
 func main() {
+	feilong.Feilong()
 	//log.SetFormatter(&log.JSONFormatter{})
 	//runtime.GOMAXPROCS(runtime.NumCPU())
 	log.SetOutput(os.Stdout)
