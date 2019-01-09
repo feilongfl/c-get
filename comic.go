@@ -40,7 +40,7 @@ const ssleepTime = 500
 const threadMax = 2
 const sleepTime = 1000
 
-func infoComic(url string) (err error) {
+func parseGet(url string) (p *parse_s, err error) {
 	parse, err := newParseFromUrl(url)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -51,16 +51,18 @@ func infoComic(url string) (err error) {
 		"parse": parse.name,
 		"id":    parse.id,
 	}).Info("parse match")
+	return parse, err
+}
 
-	var comic = comic_s{comicInfoUrl: url}
-	doc, err := parse.getComicInfoReq(comic.comicInfoUrl)
+func infoGet(p *parse_s, comic *comic_s) (err error) {
+	doc, err := p.getComicInfoReq(comic.comicInfoUrl)
 	if err != nil {
 		return err
 	}
 	//fmt.Print(doc)
-	comic.comicInfo, err = parse.getComicInfo(doc)
+	comic.comicInfo, err = p.getComicInfo(doc)
 	if comic.comicInfo.comicChapterUrl != "" {
-		doc, err = parse.getComicInfoReq(comic.comicInfoUrl)
+		doc, err = p.getComicInfoReq(comic.comicInfoUrl)
 		if err != nil {
 			return err
 		}
@@ -70,12 +72,15 @@ func infoComic(url string) (err error) {
 	log.WithFields(log.Fields{
 		"title": comic.comicInfo.title,
 	}).Warning("comic get")
-	comic.comicChapter, err = parse.getComicChapter(doc)
-	if err != nil {
-		return err
-	}
-	/////////////////////////////////////////
-	//get all images url
+
+	comic.comicChapter, err = p.getComicChapter(doc)
+
+	return err
+}
+
+/////////////////////////////////////////
+//get all images url
+func getImageUrlList(p *parse_s, comic *comic_s) (err error) {
 	type picChan_s struct {
 		index int
 		pics  []string
@@ -97,9 +102,9 @@ func infoComic(url string) (err error) {
 					"chapter": chapter.name,
 				}).Info("downloading")
 
-				doc, err = parse.getChapterImageReq(chapter.url, comic.comicInfo.comicChapterUrl)
+				doc, err := p.getChapterImageReq(chapter.url, comic.comicInfo.comicChapterUrl)
 				// todo: fix here
-				pics, err := parse.getChapterImage(doc)
+				pics, err := p.getChapterImage(doc)
 				if err != nil {
 					log.WithFields(log.Fields{
 						"index":       index,
@@ -131,8 +136,12 @@ func infoComic(url string) (err error) {
 		"comic.comicChapter": comic.comicChapter,
 	}).Debug("done all")
 
-	/////////////////////////////////////////
-	//get all images
+	return err
+}
+
+/////////////////////////////////////////
+//get all images
+func downloadImages(p *parse_s, comic *comic_s) (err error) {
 	type imageDownload_s struct {
 		index       int
 		chapterId   int
@@ -168,12 +177,12 @@ func infoComic(url string) (err error) {
 		"imageDownloadList": imageDownloadList,
 	}).Debug("image all")
 
-	bar = pb.StartNew(len(imageDownloadList))
+	bar := pb.StartNew(len(imageDownloadList))
 	download := func(image imageDownload_s) {
 		log.WithFields(log.Fields{
 			"image": image,
 		}).Info("start:")
-		err := parse.getImage(image.imageUrl, image.chapterUrl, image.savepath)
+		err := p.getImage(image.imageUrl, image.chapterUrl, image.savepath)
 		if err == nil {
 			image.success = true
 		}
@@ -226,5 +235,23 @@ func infoComic(url string) (err error) {
 	//}
 	bar.Finish()
 
-	return nil
+	return err
+}
+
+func infoComic(url string) (err error) {
+	parse, err := parseGet(url)
+
+	comic := comic_s{comicInfoUrl: url}
+
+	err = infoGet(parse, &comic)
+
+	if err != nil {
+		return err
+	}
+	getImageUrlList(parse, &comic)
+	if err != nil {
+		return err
+	}
+
+	return downloadImages(parse, &comic)
 }
