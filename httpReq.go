@@ -30,28 +30,31 @@ var defaultHttpReq = httpReqStruct{
 func ProxyAwareHttpClient() *http.Client {
 	httpTransport := &http.Transport{}
 	proxyServer, isSet := os.LookupEnv("HTTP_PROXY")
-	if isSet {
-		proxyUrl, err := url.Parse(proxyServer)
-		if err != nil {
+
+	if !isSet {
+		log.Info("no proxy")
+		httpClient := &http.Client{Transport: httpTransport}
+		return httpClient
+	}
+
+	proxyUrl, err := url.Parse(proxyServer)
+	if err != nil {
+		log.WithFields(
+			log.Fields{"proxyUrl": proxyUrl},
+		).Warning("proxy is invalid")
+	} else {
+		switch proxyUrl.Scheme {
+		case "http":
+			httpTransport.Proxy = http.ProxyURL(proxyUrl)
 			log.WithFields(
 				log.Fields{"proxyUrl": proxyUrl},
-			).Warning("proxy is invalid")
-		} else {
-			switch proxyUrl.Scheme {
-			case "http":
-				httpTransport.Proxy = http.ProxyURL(proxyUrl)
-				log.WithFields(
-					log.Fields{"proxyUrl": proxyUrl},
-				).Info(proxyUrl.Scheme + " proxy is set")
-			default:
-				log.WithFields(
-					log.Fields{"proxyUrl": proxyUrl},
-				).Warning(proxyUrl.Scheme + " proxy not support")
-				break
-			}
+			).Info(proxyUrl.Scheme + " proxy is set")
+		default:
+			log.WithFields(
+				log.Fields{"proxyUrl": proxyUrl},
+			).Warning(proxyUrl.Scheme + " proxy not support")
+			break
 		}
-	} else {
-		log.Info("no proxy")
 	}
 
 	httpClient := &http.Client{Transport: httpTransport}
