@@ -1,7 +1,7 @@
 package source
 
 import (
-	"c-get/part3rd"
+	"c-get/core"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -71,7 +71,7 @@ func KanmanhuaDecode(input string) (result string, err error) {
 	if len(lzdata) != 3 {
 		return result, errors.New("regex not match")
 	}
-	result, err = part3rd.LzDecompressFromBASE64(lzdata[2])
+	result, err = core.LzDecompressFromBASE64(lzdata[2])
 
 	result = strings.Replace(input, lzdata[1],
 		fmt.Sprintf(`'%s'.split('|')`, result), 1)
@@ -92,7 +92,7 @@ func getChapterImageKanmanhua(doc *goquery.Document) (imageUrl []string, err err
 	}
 
 	picJs, err = KanmanhuaDecode(picJs)
-	picJson, err := part3rd.EvalDecodeNew(picJs)
+	picJson, err := core.EvalDecodeNew(picJs)
 
 	re = regexp.MustCompile(`.*?({.*}).*`)
 	picJsons := re.FindStringSubmatch(picJson)

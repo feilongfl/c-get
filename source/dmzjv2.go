@@ -1,7 +1,7 @@
 package source
 
 import (
-	"c-get/part3rd"
+	"c-get/core"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
 	log "github.com/sirupsen/logrus"
@@ -69,7 +69,7 @@ func getChapterImageDmzjV2(doc *goquery.Document) (imageUrl []string, err error)
 	re := regexp.MustCompile("eval\\(.*\\)")
 	picJs := re.FindString(doc.Text())
 	log.Info(picJs)
-	picJson, err := part3rd.EvalDecode(picJs)
+	picJson, err := core.EvalDecode(picJs)
 	//log.Info(picJson)
 	//picJson, err = evalDecode(picJson)
 	re = regexp.MustCompile(`var pages=pages='\[(.*)\]'`)

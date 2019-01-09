@@ -1,7 +1,7 @@
 package source
 
 import (
-	"c-get/part3rd"
+	"c-get/core"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
 	"os"
@@ -22,15 +22,15 @@ var ParseDemo = Parse_s{
 
 //处理信息页网络下载请求
 func getComicInfoReqDefault(url string) (*goquery.Document, error) {
-	var _httpReq = part3rd.DefaultHttpReq(url)
-	doc, err := part3rd.HtmlGet(_httpReq)
+	var _httpReq = core.DefaultHttpReq(url)
+	doc, err := core.HtmlGet(_httpReq)
 	return doc, err
 }
 
 func getChapterImageReqDefault(url string, referer string) (*goquery.Document, error) {
-	var _httpReq = part3rd.DefaultHttpReq(url)
+	var _httpReq = core.DefaultHttpReq(url)
 	_httpReq.Referer = referer
-	doc, err := part3rd.HtmlGet(_httpReq)
+	doc, err := core.HtmlGet(_httpReq)
 	return doc, err
 }
 
@@ -52,9 +52,9 @@ func getChapterImageDefault(doc *goquery.Document) (imageUrl []string, err error
 func getImageDefault(imageUrl string, referer string, path string) (err error) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		// path/to/whatever does not exist
-		var _httpReq = part3rd.DefaultHttpReq(imageUrl)
+		var _httpReq = core.DefaultHttpReq(imageUrl)
 		_httpReq.Referer = referer
-		err = part3rd.FileGet(_httpReq, path)
+		err = core.FileGet(_httpReq, path)
 		if err != nil {
 			os.Remove(path)
 		}

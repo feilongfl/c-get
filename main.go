@@ -1,7 +1,7 @@
 package main
 
 import (
-	"c-get/core"
+	"c-get/command"
 	"c-get/source"
 
 	//"log"
@@ -34,5 +34,5 @@ func main() {
 	//log.SetLevel(log.InfoLevel)
 	//log.SetLevel(log.DebugLevel)
 	initParse()
-	core.CliRecv()
+	command.CliRecv()
 }

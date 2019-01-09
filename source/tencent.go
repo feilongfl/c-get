@@ -1,7 +1,7 @@
 package source
 
 import (
-	"c-get/part3rd"
+	"c-get/core"
 	"encoding/json"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
@@ -69,8 +69,8 @@ func getChapterImageTencent(doc *goquery.Document) (imageUrl []string, err error
 	re := regexp.MustCompile("eval\\(.*\\)")
 	picJs := re.FindString(doc.Text())
 	//log.Info(picJs)
-	picJson, err := part3rd.EvalDecode(picJs)
-	picJson, err = part3rd.EvalDecode(picJson)
+	picJson, err := core.EvalDecode(picJs)
+	picJson, err = core.EvalDecode(picJson)
 	re = regexp.MustCompile("var pages='(.*)'")
 	picJsons := re.FindStringSubmatch(picJson)
 	if len(picJsons) != 2 {

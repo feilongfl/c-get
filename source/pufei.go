@@ -1,7 +1,7 @@
 package source
 
 import (
-	"c-get/part3rd"
+	"c-get/core"
 	"encoding/base64"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
@@ -26,12 +26,12 @@ var ParsePUFEI = Parse_s{
 func getComicInfoPufei(doc *goquery.Document) (comicInfo comicInfo_s, err error) {
 	dinfo := doc.Find("div.detail")
 	comicInfo = comicInfo_s{
-		title:    part3rd.ConvertToString(dinfo.Find("div.titleInfo > h1").Text(), "gbk", "utf-8"),
+		title:    core.ConvertToString(dinfo.Find("div.titleInfo > h1").Text(), "gbk", "utf-8"),
 		coverUrl: dinfo.Find("div.info_cover > img").AttrOr("src", _unknowPic_),
 		isFinish: !(dinfo.Find("div.titleInfo > span").Text() == "连载"),
 	}
 	dinfo.Find("div.detailInfo > ul > li").Each(func(i int, selection *goquery.Selection) {
-		data := part3rd.ConvertToString(selection.Text(), "gbk", "utf-8")
+		data := core.ConvertToString(selection.Text(), "gbk", "utf-8")
 		switch i {
 		case 0:
 			data = strings.Replace(data, "更新时间：", "", 1)
@@ -62,7 +62,7 @@ func getComicChapterPufei(doc *goquery.Document) (comicChapter []comicChapter_s,
 		adoc := selection.Find("a")
 
 		var c = comicChapter_s{
-			name: part3rd.ConvertToString(adoc.AttrOr("title", ""), "gbk", "utf-8"),
+			name: core.ConvertToString(adoc.AttrOr("title", ""), "gbk", "utf-8"),
 
 			group: 0,
 		}
@@ -96,7 +96,7 @@ func getChapterImagePufei(doc *goquery.Document) (imageUrl []string, err error) 
 	if err != nil {
 		return imageUrl, err
 	}
-	picJson, err := part3rd.EvalDecode(string(decoded))
+	picJson, err := core.EvalDecode(string(decoded))
 	if err != nil {
 		return imageUrl, err
 	}

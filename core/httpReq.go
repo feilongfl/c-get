@@ -1,4 +1,4 @@
-package part3rd
+package core
 
 import (
 	"errors"
