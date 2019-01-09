@@ -21,6 +21,7 @@ before_script:
   - go get github.com/urfave/cli
   - go get github.com/konsorten/go-windows-terminal-sequences || true
   - go get github.com/axgle/mahonia
+  - go get github.com/feilongfl/c-get
   
 script:
   - sh ./build.sh
