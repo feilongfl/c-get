@@ -62,8 +62,7 @@ func infoGet(p *parse_s, comic *comic_s) (err error) {
 	//fmt.Print(doc)
 	comic.comicInfo, err = p.getComicInfo(doc)
 	if comic.comicInfo.comicChapterUrl != "" {
-		doc, err = p.getComicInfoReq(comic.comicInfoUrl)
-		if err != nil {
+		if doc, err = p.getComicInfoReq(comic.comicInfoUrl); err != nil {
 			return err
 		}
 	} else {
@@ -96,7 +95,6 @@ func getImageUrlList(p *parse_s, comic *comic_s) (err error) {
 			sworker++
 			chapter := comic.comicChapter[sindex]
 			go func(chapter comicChapter_s, index int) {
-				//chapter := comic.comicChapter[index]
 				log.WithFields(log.Fields{
 					"index":   index,
 					"chapter": chapter.name,
@@ -182,8 +180,8 @@ func downloadImages(p *parse_s, comic *comic_s) (err error) {
 		log.WithFields(log.Fields{
 			"image": image,
 		}).Info("start:")
-		err := p.getImage(image.imageUrl, image.chapterUrl, image.savepath)
-		if err == nil {
+
+		if err := p.getImage(image.imageUrl, image.chapterUrl, image.savepath); err == nil {
 			image.success = true
 		}
 		imageDown_c <- image
@@ -239,17 +237,17 @@ func downloadImages(p *parse_s, comic *comic_s) (err error) {
 }
 
 func infoComic(url string) (err error) {
-	parse, err := parseGet(url)
-
 	comic := comic_s{comicInfoUrl: url}
-
-	err = infoGet(parse, &comic)
-
+	parse, err := parseGet(url)
 	if err != nil {
 		return err
 	}
-	getImageUrlList(parse, &comic)
-	if err != nil {
+
+	if err = infoGet(parse, &comic); err != nil {
+		return err
+	}
+
+	if err = getImageUrlList(parse, &comic); err != nil {
 		return err
 	}
 
