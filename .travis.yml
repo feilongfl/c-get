@@ -26,6 +26,10 @@ before_script:
 script:
   - sh ./build.sh
   
+# public repo on Travis CI
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  
 deploy:
   provider: releases
   api_key: ${githubtoken}
