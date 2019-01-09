@@ -30,10 +30,10 @@ deploy:
   provider: releases
   api_key: ${githubtoken}
   file:
-    - "c-get-linux-amd64"
-    - "c-get-linux-arm"
-    - "c-get-mac"
-    - "c-get-win.exe"
+    - "./build/c-get-linux-amd64"
+    - "./build/c-get-linux-arm"
+    - "./build/c-get-mac"
+    - "./build/c-get-win.exe"
   skip_cleanup: true
   on:
     repo: feilongfl/c-get
