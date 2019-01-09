@@ -12,6 +12,8 @@ cache:
     - node_modules
 
 before_script:
+  - sudo apt-get update -qq
+  - sudo apt-get install upx -y
   - go get github.com/sirupsen/logrus
   - go get gopkg.in/cheggaaa/pb.v2
   - go get github.com/PuerkitoBio/goquery
@@ -19,10 +21,7 @@ before_script:
   - go get github.com/urfave/cli
   - go get github.com/konsorten/go-windows-terminal-sequences || true
   - go get github.com/axgle/mahonia
-
-script:
-  - sh ./build.sh
-
+  
 deploy:
   provider: releases
   api_key: ${githubtoken}
