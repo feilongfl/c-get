@@ -6,3 +6,4 @@ c-get-mac
 c-get-win.exe
 .idea
 build
+build/data
