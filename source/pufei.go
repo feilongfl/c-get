@@ -1,7 +1,7 @@
 package source
 
 import (
-	"./core"
+	"../core"
 	"encoding/base64"
 	"errors"
 	"github.com/PuerkitoBio/goquery"

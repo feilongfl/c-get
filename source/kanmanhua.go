@@ -1,7 +1,7 @@
 package source
 
 import (
-	"./core"
+	"../core"
 	"encoding/json"
 	"errors"
 	"fmt"
