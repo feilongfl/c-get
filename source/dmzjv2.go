@@ -1,7 +1,7 @@
 package source
 
 import (
-	"c-get/core"
+	"./core"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
 	log "github.com/sirupsen/logrus"

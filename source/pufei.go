@@ -1,7 +1,7 @@
 package source
 
 import (
-	"c-get/core"
+	"./core"
 	"encoding/base64"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
