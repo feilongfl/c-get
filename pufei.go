@@ -9,6 +9,19 @@ import (
 	"strings"
 )
 
+var ParsePUFEI = parse_s{
+	name:               "扑飞漫画",
+	id:                 0,
+	regex:              []string{"www.pufei.net"},
+	getComicInfoReq:    getComicInfoReqDefault,
+	getComicInfo:       getComicInfoPufei,
+	getComicChapterReq: getComicInfoReqDefault,
+	getComicChapter:    getComicChapterPufei,
+	getChapterImageReq: getChapterImageReqDefault,
+	getChapterImage:    getChapterImagePufei,
+	getImage:           getImageDefault,
+}
+
 func getComicInfoPufei(doc *goquery.Document) (comicInfo comicInfo_s, err error) {
 	dinfo := doc.Find("div.detail")
 	comicInfo = comicInfo_s{

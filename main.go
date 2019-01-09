@@ -10,89 +10,34 @@ var _version_ = "v1.0.0"
 var _commit_ = "manual"
 var _unknowPic_ = "http://xxx.pic"
 
+var ParseDemo = parse_s{
+	name:               "demo",
+	id:                 0,
+	regex:              []string{"www.example.com"},
+	getComicInfoReq:    getComicInfoReqDefault,
+	getComicInfo:       getComicInfoDefault,
+	getComicChapterReq: getComicInfoReqDefault,
+	getComicChapter:    getComicChapterDefault,
+	getChapterImageReq: getChapterImageReqDefault,
+	getChapterImage:    getChapterImageDefault,
+	getImage:           getImageDefault,
+}
+
 func initParse() {
-	parseList = append(parseList, parse_s{
-		name:               "demo",
-		id:                 -1,
-		regex:              []string{"www.example.com"},
-		getComicInfoReq:    getComicInfoReqDefault,
-		getComicInfo:       getComicInfoDefault,
-		getComicChapterReq: getComicInfoReqDefault,
-		getComicChapter:    getComicChapterDefault,
-		getChapterImageReq: getChapterImageReqDefault,
-		getChapterImage:    getChapterImageDefault,
-		getImage:           getImageDefault,
-	})
+	parseArray := []parse_s{
+		// add parse here
+		ParseDemo,
+		ParseDMZJ,
+		ParsePUFEI,
+		ParseTENCENT,
+		ParseDMZJV2,
+		ParseKANMANHUA,
+	}
 
-	id := 0
-	parseList = append(parseList, parse_s{
-		name:               "动漫之家",
-		id:                 id,
-		regex:              []string{"www.dmzj.com"},
-		getComicInfoReq:    getComicInfoReqDefault,
-		getComicInfo:       getComicInfoDmzj,
-		getComicChapterReq: getComicInfoReqDefault,
-		getComicChapter:    getComicChapterDmzj,
-		getChapterImageReq: getChapterImageReqDefault,
-		getChapterImage:    getChapterImageDmzj,
-		getImage:           getImageDefault,
-	})
-
-	id += 1
-	parseList = append(parseList, parse_s{
-		name:               "扑飞漫画",
-		id:                 id,
-		regex:              []string{"www.pufei.net"},
-		getComicInfoReq:    getComicInfoReqDefault,
-		getComicInfo:       getComicInfoPufei,
-		getComicChapterReq: getComicInfoReqDefault,
-		getComicChapter:    getComicChapterPufei,
-		getChapterImageReq: getChapterImageReqDefault,
-		getChapterImage:    getChapterImagePufei,
-		getImage:           getImageDefault,
-	})
-
-	id += 1
-	parseList = append(parseList, parse_s{
-		name:               "t腾讯漫画",
-		id:                 id,
-		regex:              []string{"ac.qq.com"},
-		getComicInfoReq:    getComicInfoReqDefault,
-		getComicInfo:       getComicInfoTencent,
-		getComicChapterReq: getComicInfoReqDefault,
-		getComicChapter:    getComicChapterPufei,
-		getChapterImageReq: getChapterImageReqDefault,
-		getChapterImage:    getChapterImagePufei,
-		getImage:           getImageDefault,
-	})
-
-	id += 1
-	parseList = append(parseList, parse_s{
-		name:               "动漫之家v2",
-		id:                 id,
-		regex:              []string{"manhua.dmzj.com"},
-		getComicInfoReq:    getComicInfoReqDefault,
-		getComicInfo:       getComicInfoDmzjV2,
-		getComicChapterReq: getComicInfoReqDefault,
-		getComicChapter:    getComicChapterDmzjV2,
-		getChapterImageReq: getChapterImageReqDefault,
-		getChapterImage:    getChapterImageDmzjV2,
-		getImage:           getImageDefault,
-	})
-
-	id += 1
-	parseList = append(parseList, parse_s{
-		name:               "看漫画",
-		id:                 id,
-		regex:              []string{"tw.manhuagui.com", "www.manhuagui.com"},
-		getComicInfoReq:    getComicInfoReqDefault,
-		getComicInfo:       getComicInfoKanmanhua,
-		getComicChapterReq: getComicInfoReqDefault,
-		getComicChapter:    getComicChapterKanmanhua,
-		getChapterImageReq: getChapterImageReqDefault,
-		getChapterImage:    getChapterImageKanmanhua,
-		getImage:           getImageDefault,
-	})
+	for i, p := range parseArray {
+		p.id = i
+		parseList = append(parseList, p)
+	}
 }
 
 func main() {

@@ -10,6 +10,19 @@ import (
 	"strings"
 )
 
+var ParseKANMANHUA = parse_s{
+	name:               "看漫画",
+	id:                 0,
+	regex:              []string{"tw.manhuagui.com", "www.manhuagui.com"},
+	getComicInfoReq:    getComicInfoReqDefault,
+	getComicInfo:       getComicInfoKanmanhua,
+	getComicChapterReq: getComicInfoReqDefault,
+	getComicChapter:    getComicChapterKanmanhua,
+	getChapterImageReq: getChapterImageReqDefault,
+	getChapterImage:    getChapterImageKanmanhua,
+	getImage:           getImageDefault,
+}
+
 func getComicInfoKanmanhua(doc *goquery.Document) (comicInfo comicInfo_s, err error) {
 	comicInfo = comicInfo_s{
 		title:    doc.Find("div.book-title > h1").Text(),

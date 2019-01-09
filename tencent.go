@@ -9,6 +9,19 @@ import (
 	"strings"
 )
 
+var ParseTENCENT = parse_s{
+	name:               "腾讯漫画",
+	id:                 0,
+	regex:              []string{"ac.qq.com"},
+	getComicInfoReq:    getComicInfoReqDefault,
+	getComicInfo:       getComicInfoTencent,
+	getComicChapterReq: getComicInfoReqDefault,
+	getComicChapter:    getComicChapterPufei,
+	getChapterImageReq: getChapterImageReqDefault,
+	getChapterImage:    getChapterImagePufei,
+	getImage:           getImageDefault,
+}
+
 func getComicInfoTencent(doc *goquery.Document) (comicInfo comicInfo_s, err error) {
 	dinfo := doc.Find("div.works-intro")
 	comicInfo = comicInfo_s{

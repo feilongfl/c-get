@@ -8,6 +8,19 @@ import (
 	"strings"
 )
 
+var ParseDMZJV2 = parse_s{
+	name:               "动漫之家v2",
+	id:                 0,
+	regex:              []string{"manhua.dmzj.com"},
+	getComicInfoReq:    getComicInfoReqDefault,
+	getComicInfo:       getComicInfoDmzjV2,
+	getComicChapterReq: getComicInfoReqDefault,
+	getComicChapter:    getComicChapterDmzjV2,
+	getChapterImageReq: getChapterImageReqDefault,
+	getChapterImage:    getChapterImageDmzjV2,
+	getImage:           getImageDefault,
+}
+
 func getComicInfoDmzjV2(doc *goquery.Document) (comicInfo comicInfo_s, err error) {
 	//dinfo := doc.Find("div.wrap_intro_l")
 	comicInfo = comicInfo_s{
