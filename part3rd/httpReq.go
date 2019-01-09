@@ -1,4 +1,4 @@
-package main
+package part3rd
 
 import (
 	"errors"
@@ -12,19 +12,25 @@ import (
 	"net/http"
 )
 
-type httpReqStruct struct {
-	url       string
-	referer   string
-	userAgent string
-	method    string
+type HttpReqStruct struct {
+	Url       string
+	Referer   string
+	UserAgent string
+	Method    string
 	body      io.Reader
 }
 
-var defaultHttpReq = httpReqStruct{
-	method:    "GET",
-	userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36",
+var defaultHttpReq = HttpReqStruct{
+	Method:    "GET",
+	UserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36",
 	body:      nil,
-	referer:   "",
+	Referer:   "",
+}
+
+func DefaultHttpReq(url string) (httpReq HttpReqStruct) {
+	httpReq = defaultHttpReq
+	httpReq.Url = url
+	return httpReq
 }
 
 func ProxyAwareHttpClient() *http.Client {
@@ -61,22 +67,22 @@ func ProxyAwareHttpClient() *http.Client {
 	return httpClient
 }
 
-func httpGet(httpReq httpReqStruct) ([]byte, error) {
+func httpGet(httpReq HttpReqStruct) ([]byte, error) {
 	log.WithFields(log.Fields{
 		"req": httpReq,
 	}).Debug("httpGet")
 
 	client := ProxyAwareHttpClient()
 
-	req, err := http.NewRequest(httpReq.method, httpReq.url, httpReq.body)
+	req, err := http.NewRequest(httpReq.Method, httpReq.Url, httpReq.body)
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
 
-	req.Header.Set("User-Agent", httpReq.userAgent)
-	if httpReq.referer != "" {
-		req.Header.Set("Referer", httpReq.referer)
+	req.Header.Set("User-Agent", httpReq.UserAgent)
+	if httpReq.Referer != "" {
+		req.Header.Set("Referer", httpReq.Referer)
 	}
 
 	resp, err := client.Do(req)
@@ -96,24 +102,24 @@ func httpGet(httpReq httpReqStruct) ([]byte, error) {
 	return body, nil
 }
 
-func htmlGet(httpReq httpReqStruct) (*goquery.Document, error) {
+func HtmlGet(httpReq HttpReqStruct) (*goquery.Document, error) {
 	log.WithFields(log.Fields{
 		"req": httpReq,
 	}).Debug("httpGet")
 
 	client := ProxyAwareHttpClient()
 
-	req, err := http.NewRequest(httpReq.method, httpReq.url, httpReq.body)
+	req, err := http.NewRequest(httpReq.Method, httpReq.Url, httpReq.body)
 	if err != nil {
 		log.Error(err)
 		return nil, err
 	}
 
-	if httpReq.userAgent != "" {
-		req.Header.Set("User-Agent", httpReq.userAgent)
+	if httpReq.UserAgent != "" {
+		req.Header.Set("User-Agent", httpReq.UserAgent)
 	}
-	if httpReq.referer != "" {
-		req.Header.Set("Referer", httpReq.referer)
+	if httpReq.Referer != "" {
+		req.Header.Set("Referer", httpReq.Referer)
 	}
 
 	resp, err := client.Do(req)
@@ -129,22 +135,22 @@ func htmlGet(httpReq httpReqStruct) (*goquery.Document, error) {
 	return doc, nil
 }
 
-func fileGet(httpReq httpReqStruct, storagePath string) error {
+func FileGet(httpReq HttpReqStruct, storagePath string) error {
 	log.WithFields(log.Fields{
 		"req": httpReq,
-	}).Debug("fileGet")
+	}).Debug("FileGet")
 
 	client := ProxyAwareHttpClient()
 
-	req, err := http.NewRequest(httpReq.method, httpReq.url, httpReq.body)
+	req, err := http.NewRequest(httpReq.Method, httpReq.Url, httpReq.body)
 	if err != nil {
 		log.Error(err)
 		return err
 	}
 
-	req.Header.Set("User-Agent", httpReq.userAgent)
-	if httpReq.referer != "" {
-		req.Header.Set("Referer", httpReq.referer)
+	req.Header.Set("User-Agent", httpReq.UserAgent)
+	if httpReq.Referer != "" {
+		req.Header.Set("Referer", httpReq.Referer)
 	}
 
 	resp, err := client.Do(req)

@@ -1,4 +1,4 @@
-package main
+package part3rd
 
 import (
 	"github.com/robertkrimen/otto"
@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func evalDecode(code string) (string, error) {
+func EvalDecode(code string) (string, error) {
 	code = strings.Replace(code, "eval", "tempval=", 1)
 	vm := otto.New()
 	vm.Run(code)
@@ -25,7 +25,7 @@ func evalDecode(code string) (string, error) {
 	return value_str, nil
 }
 
-func evalDecodeNew(code string) (string, error) {
+func EvalDecodeNew(code string) (string, error) {
 	code = strings.Replace(code, "eval", "", 1)
 	vm := otto.New()
 	value, err := vm.Run(code)

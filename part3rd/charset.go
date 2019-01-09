@@ -1,4 +1,4 @@
-package main
+package part3rd
 
 import "github.com/axgle/mahonia"
 

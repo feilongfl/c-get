@@ -1,4 +1,4 @@
-package main
+package source
 
 import (
 	"fmt"
@@ -8,6 +8,13 @@ import (
 	"runtime"
 	"time"
 )
+
+const sthreadMax = 2
+const ssleepTime = 500
+const threadMax = 2
+const sleepTime = 1000
+
+var _unknowPic_ = "http://xxx.pic"
 
 type comicInfo_s struct {
 	title           string
@@ -32,15 +39,10 @@ type comic_s struct {
 	comicInfoUrl string
 	comicInfo    comicInfo_s
 	comicChapter []comicChapter_s
-	parse        parse_s
+	parse        Parse_s
 }
 
-const sthreadMax = 2
-const ssleepTime = 500
-const threadMax = 2
-const sleepTime = 1000
-
-func parseGet(url string) (p *parse_s, err error) {
+func parseGet(url string) (p *Parse_s, err error) {
 	parse, err := newParseFromUrl(url)
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -49,12 +51,12 @@ func parseGet(url string) (p *parse_s, err error) {
 	}
 	log.WithFields(log.Fields{
 		"parse": parse.name,
-		"id":    parse.id,
+		"Id":    parse.Id,
 	}).Info("parse match")
 	return parse, err
 }
 
-func infoGet(p *parse_s, comic *comic_s) (err error) {
+func infoGet(p *Parse_s, comic *comic_s) (err error) {
 	doc, err := p.getComicInfoReq(comic.comicInfoUrl)
 	if err != nil {
 		return err
@@ -79,7 +81,7 @@ func infoGet(p *parse_s, comic *comic_s) (err error) {
 
 /////////////////////////////////////////
 //get all images url
-func getImageUrlList(p *parse_s, comic *comic_s) (err error) {
+func getImageUrlList(p *Parse_s, comic *comic_s) (err error) {
 	type picChan_s struct {
 		index int
 		pics  []string
@@ -175,7 +177,7 @@ func genDownloadImageList(comic *comic_s) (imageDownloadList []imageDownload_s, 
 	return imageDownloadList, err
 }
 
-func downloadImageFromList(p *parse_s, imageDownloadList []imageDownload_s) (err error) {
+func downloadImageFromList(p *Parse_s, imageDownloadList []imageDownload_s) (err error) {
 	imageDown_c := make(chan imageDownload_s)
 	bar := pb.StartNew(len(imageDownloadList))
 
@@ -231,13 +233,13 @@ func downloadImageFromList(p *parse_s, imageDownloadList []imageDownload_s) (err
 	return err
 }
 
-func downloadImages(p *parse_s, comic *comic_s) (err error) {
+func downloadImages(p *Parse_s, comic *comic_s) (err error) {
 	imageDownloadList, _ := genDownloadImageList(comic)
 
 	return downloadImageFromList(p, imageDownloadList)
 }
 
-func infoComic(url string) (err error) {
+func InfoComic(url string) (err error) {
 	comic := comic_s{comicInfoUrl: url}
 	parse, err := parseGet(url)
 	if err != nil {

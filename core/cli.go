@@ -1,13 +1,17 @@
-package main
+package core
 
 import (
+	"c-get/source"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 	"os"
 	"sort"
 )
 
-func cliRecv() {
+var _version_ = "v1.0.0"
+var _commit_ = "manual"
+
+func CliRecv() {
 	app := cli.NewApp()
 	app.Version = _version_
 	app.Author = "feilong"
@@ -45,7 +49,7 @@ func cliRecv() {
 			Aliases: []string{"dc"},
 			Usage:   "download all comic images",
 			Action: func(c *cli.Context) error {
-				return infoComic(c.Args().First())
+				return source.InfoComic(c.Args().First())
 			},
 		},
 		//{

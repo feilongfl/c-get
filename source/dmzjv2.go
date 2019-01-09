@@ -1,6 +1,7 @@
-package main
+package source
 
 import (
+	"c-get/part3rd"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
 	log "github.com/sirupsen/logrus"
@@ -8,9 +9,9 @@ import (
 	"strings"
 )
 
-var ParseDMZJV2 = parse_s{
+var ParseDMZJV2 = Parse_s{
 	name:               "动漫之家v2",
-	id:                 0,
+	Id:                 0,
 	regex:              []string{"manhua.dmzj.com"},
 	getComicInfoReq:    getComicInfoReqDefault,
 	getComicInfo:       getComicInfoDmzjV2,
@@ -68,7 +69,7 @@ func getChapterImageDmzjV2(doc *goquery.Document) (imageUrl []string, err error)
 	re := regexp.MustCompile("eval\\(.*\\)")
 	picJs := re.FindString(doc.Text())
 	log.Info(picJs)
-	picJson, err := evalDecode(picJs)
+	picJson, err := part3rd.EvalDecode(picJs)
 	//log.Info(picJson)
 	//picJson, err = evalDecode(picJson)
 	re = regexp.MustCompile(`var pages=pages='\[(.*)\]'`)

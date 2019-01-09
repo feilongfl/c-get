@@ -1,6 +1,7 @@
-package main
+package source
 
 import (
+	"c-get/part3rd"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,9 +11,9 @@ import (
 	"strings"
 )
 
-var ParseKANMANHUA = parse_s{
+var ParseKANMANHUA = Parse_s{
 	name:               "看漫画",
-	id:                 0,
+	Id:                 0,
 	regex:              []string{"tw.manhuagui.com", "www.manhuagui.com"},
 	getComicInfoReq:    getComicInfoReqDefault,
 	getComicInfo:       getComicInfoKanmanhua,
@@ -70,7 +71,7 @@ func KanmanhuaDecode(input string) (result string, err error) {
 	if len(lzdata) != 3 {
 		return result, errors.New("regex not match")
 	}
-	result, err = lzDecompressFromBASE64(lzdata[2])
+	result, err = part3rd.LzDecompressFromBASE64(lzdata[2])
 
 	result = strings.Replace(input, lzdata[1],
 		fmt.Sprintf(`'%s'.split('|')`, result), 1)
@@ -91,7 +92,7 @@ func getChapterImageKanmanhua(doc *goquery.Document) (imageUrl []string, err err
 	}
 
 	picJs, err = KanmanhuaDecode(picJs)
-	picJson, err := evalDecodeNew(picJs)
+	picJson, err := part3rd.EvalDecodeNew(picJs)
 
 	re = regexp.MustCompile(`.*?({.*}).*`)
 	picJsons := re.FindStringSubmatch(picJson)

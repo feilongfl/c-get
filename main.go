@@ -1,48 +1,32 @@
 package main
 
 import (
-	"c-get/feilong"
+	"c-get/core"
+	"c-get/source"
+
 	//"log"
 	log "github.com/sirupsen/logrus"
 	"os"
 )
 
-var _version_ = "v1.0.0"
-var _commit_ = "manual"
-var _unknowPic_ = "http://xxx.pic"
-
-var ParseDemo = parse_s{
-	name:               "demo",
-	id:                 0,
-	regex:              []string{"www.example.com"},
-	getComicInfoReq:    getComicInfoReqDefault,
-	getComicInfo:       getComicInfoDefault,
-	getComicChapterReq: getComicInfoReqDefault,
-	getComicChapter:    getComicChapterDefault,
-	getChapterImageReq: getChapterImageReqDefault,
-	getChapterImage:    getChapterImageDefault,
-	getImage:           getImageDefault,
-}
-
 func initParse() {
-	parseArray := []parse_s{
+	parseArray := []source.Parse_s{
 		// add parse here
-		ParseDemo,
-		ParseDMZJ,
-		ParsePUFEI,
-		ParseTENCENT,
-		ParseDMZJV2,
-		ParseKANMANHUA,
+		source.ParseDemo,
+		source.ParseDMZJ,
+		source.ParsePUFEI,
+		source.ParseTENCENT,
+		source.ParseDMZJV2,
+		source.ParseKANMANHUA,
 	}
 
 	for i, p := range parseArray {
-		p.id = i
-		parseList = append(parseList, p)
+		p.Id = i
+		source.ParseList = append(source.ParseList, p)
 	}
 }
 
 func main() {
-	feilong.Feilong()
 	//log.SetFormatter(&log.JSONFormatter{})
 	//runtime.GOMAXPROCS(runtime.NumCPU())
 	log.SetOutput(os.Stdout)
@@ -50,5 +34,5 @@ func main() {
 	//log.SetLevel(log.InfoLevel)
 	//log.SetLevel(log.DebugLevel)
 	initParse()
-	cliRecv()
+	core.CliRecv()
 }

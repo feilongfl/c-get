@@ -1,6 +1,7 @@
-package main
+package source
 
 import (
+	"c-get/part3rd"
 	"encoding/json"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
@@ -9,9 +10,9 @@ import (
 	"strings"
 )
 
-var ParseDMZJ = parse_s{
+var ParseDMZJ = Parse_s{
 	name:               "动漫之家",
-	id:                 0,
+	Id:                 0,
 	regex:              []string{"www.dmzj.com"},
 	getComicInfoReq:    getComicInfoReqDefault,
 	getComicInfo:       getComicInfoDmzj,
@@ -80,8 +81,8 @@ func getChapterImageDmzj(doc *goquery.Document) (imageUrl []string, err error) {
 	re := regexp.MustCompile("eval\\(.*\\)")
 	picJs := re.FindString(doc.Text())
 	//log.Info(picJs)
-	picJson, err := evalDecode(picJs)
-	picJson, err = evalDecode(picJson)
+	picJson, err := part3rd.EvalDecode(picJs)
+	picJson, err = part3rd.EvalDecode(picJson)
 	re = regexp.MustCompile("var pages='(.*)'")
 	picJsons := re.FindStringSubmatch(picJson)
 	if len(picJsons) != 2 {

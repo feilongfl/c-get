@@ -1,4 +1,4 @@
-package main
+package part3rd
 
 import (
 	"fmt"
@@ -515,7 +515,7 @@ if (typeof define === 'function' && define.amd) {
 }
 `
 
-func lzDecompressFromBASE64(input string) (result string, err error) {
+func LzDecompressFromBASE64(input string) (result string, err error) {
 	//code := lzStringJs + `tempval = LZString.decompressFromBase64("` + input + `")`
 	code := fmt.Sprintf(`%s;tempval = LZString.decompressFromBase64("%s")`,
 		lzStringJs, input)
