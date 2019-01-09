@@ -1,9 +1,9 @@
 package source
 
 import (
-	"../core"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/feilongfl/c-get/core"
 	"os"
 )
 

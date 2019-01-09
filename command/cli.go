@@ -1,7 +1,7 @@
 package command
 
 import (
-	"../source"
+	"github.com/feilongfl/c-get/source"
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 	"os"

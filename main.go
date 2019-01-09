@@ -1,8 +1,8 @@
 package main
 
 import (
-	"./command"
-	"./source"
+	"github.com/feilongfl/c-get/command"
+	"github.com/feilongfl/c-get/source"
 
 	//"log"
 	log "github.com/sirupsen/logrus"

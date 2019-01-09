@@ -1,10 +1,10 @@
 package source
 
 import (
-	"../core"
 	"encoding/base64"
 	"errors"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/feilongfl/c-get/core"
 	log "github.com/sirupsen/logrus"
 	"regexp"
 	"strings"
