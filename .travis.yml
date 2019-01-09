@@ -22,6 +22,9 @@ before_script:
   - go get github.com/konsorten/go-windows-terminal-sequences || true
   - go get github.com/axgle/mahonia
   
+script:
+  - sh ./build.sh
+  
 deploy:
   provider: releases
   api_key: ${githubtoken}
