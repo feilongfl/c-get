@@ -13,7 +13,7 @@ import (
 var ParsePUFEI = Parse_s{
 	name:               "扑飞漫画",
 	Id:                 0,
-	regex:              []string{"www.pufei.net"},
+	regex:              []string{"www.pufei.net","m.pufei.net"},
 	getComicInfoReq:    getComicInfoReqDefault,
 	getComicInfo:       getComicInfoPufei,
 	getComicChapterReq: getComicInfoReqDefault,
