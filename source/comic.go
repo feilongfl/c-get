@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-const sthreadMax = 5
-const ssleepTime = 50
-const threadMax = 10
-const sleepTime = 100
+const sthreadMax = 10
+const ssleepTime = 20
+const threadMax = 30
+const sleepTime = 50
 
 var _unknowPic_ = "http://xxx.pic"
 
