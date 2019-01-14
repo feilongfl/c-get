@@ -10,9 +10,9 @@ import (
 )
 
 var ParseHHXXEE = Parse_s{
-	name:               "997700",
+	name:               "99770",
 	Id:                 0,
-	regex:              []string{"997700.hhxxee.com"},
+	regex:              []string{"99770.hhxxee.com"},
 	getComicInfoReq:    getComicInfoReqDefault,
 	getComicInfo:       getComicInfoHhxxee,
 	getComicChapterReq: getComicInfoReqDefault,
@@ -23,10 +23,10 @@ var ParseHHXXEE = Parse_s{
 }
 
 func getComicInfoHhxxee(doc *goquery.Document) (comicInfo comicInfo_s, err error) {
-	dinfo := doc.Find("div.cCon")
 	comicInfo = comicInfo_s{
-		title:    dinfo.Find("div.cTitle").Text(),
-		coverUrl: dinfo.Find("div.cDefaultImg > img").AttrOr("src", _unknowPic_),
+		title:    strings.Split(strings.Trim(doc.Find("h1.cTitle").Text(), " \n"), "\n")[0],
+		coverUrl: doc.Find("div.cDefaultImg > img").AttrOr("src", _unknowPic_),
+		info:     strings.Trim(doc.Find("div.cCon").Text(), " \n"),
 		isFinish: false,
 	}
 
@@ -39,7 +39,7 @@ func getComicInfoHhxxee(doc *goquery.Document) (comicInfo comicInfo_s, err error
 
 func getComicChapterHhxxee(doc *goquery.Document) (comicChapter []comicChapter_s, err error) {
 	comicChapter = make([]comicChapter_s, 0)
-	doc.Find("div#subBookListAct > div").Each(func(i int, selection *goquery.Selection) {
+	doc.Find(".cVolList > div").Each(func(i int, selection *goquery.Selection) {
 		adoc := selection.Find("a")
 
 		var c = comicChapter_s{
@@ -47,8 +47,8 @@ func getComicChapterHhxxee(doc *goquery.Document) (comicChapter []comicChapter_s
 			group: 0,
 		}
 
-		adochref := adoc.AttrOr("href", "")
-		if adochref != "" {
+		c.url = adoc.AttrOr("href", "")
+		if c.url != "" {
 			comicChapter = append(comicChapter, c)
 		}
 	})
@@ -91,7 +91,8 @@ func hhxxeeServerGet(url string) (serverId int) {
 
 func getChapterImageHhxxee(doc *goquery.Document) (imageUrl []string, err error) {
 	re := regexp.MustCompile(`var sFiles="(.*?)"`)
-	picJsons := re.FindStringSubmatch(doc.Text())
+	a := doc.Text()
+	picJsons := re.FindStringSubmatch(a)
 	if len(picJsons) != 2 {
 		return imageUrl, errors.New("regex not match")
 	}
