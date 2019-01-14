@@ -3,7 +3,6 @@ package source
 import (
 	"errors"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/feilongfl/c-get/source"
 	log "github.com/sirupsen/logrus"
 	"regexp"
 )
@@ -21,10 +20,10 @@ type Parse_s struct {
 	getImage           func(imageUrl string, referer string, path string) (err error)
 }
 
-var ParseList = make([]Parse_s, 0)
+var parseList = make([]Parse_s, 0)
 
 func newParseFromUrl(url string) (p *Parse_s, err error) {
-	for _, p := range ParseList {
+	for _, p := range parseList {
 		for _, r := range p.regex {
 			m, err := regexp.MatchString(r, url)
 			if err != nil {
@@ -41,6 +40,6 @@ func newParseFromUrl(url string) (p *Parse_s, err error) {
 func InitParse(parseArray []Parse_s) {
 	for i, p := range parseArray {
 		p.Id = i
-		source.ParseList = append(source.ParseList, p)
+		parseList = append(parseList, p)
 	}
 }
