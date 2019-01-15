@@ -17,6 +17,7 @@ var parseArray = []source.Parse_s{
 	source.ParseTENCENT,
 	source.ParseDMZJV2,
 	source.ParseKANMANHUA,
+	source.ParseHHXXEE,
 }
 
 func main() {
